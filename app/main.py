@@ -15,6 +15,6 @@ def open_resource():
 
 @app.get("/protected")
 def secret_resource(api_key: str):
-    if api_key != API_KEY:
+    if not api_key or api_key != API_KEY:
         return JSONResponse(status_code=401, content={"msg": "Unauthorized"})
     return {"msg": "This is a protected resource!!", "api_key": api_key}
