@@ -1,12 +1,20 @@
+import os
 from fastapi import FastAPI
+from fastapi.responses import JSONResponse
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = FastAPI()
 
+API_KEY = os.getenv("API_KEY")
+
 @app.get("/")
-def read_root():
-    return { "msg": "Hello!", "v": "0.1" }
+def open_resource():
+    return { "msg": "Hello from Derya!!", "v": "0.1" }
 
-
-@app.get("/items/{id}")
-def read_item(item_id: int, q: str = None):
-    return {"id": id, "q": q}
+@app.get("/protected")
+def secret_resource(api_key: str):
+    if api_key != API_KEY:
+        return JSONResponse(status_code=401, content={"msg": "Unauthorized"})
+    return {"msg": "This is a protected resource!!", "api_key": api_key}
